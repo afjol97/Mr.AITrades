@@ -3,3 +3,7 @@ pub mod flatbuf_decoder;
 pub mod ffi;
 pub mod socket;
 pub mod tick_generated;
+pub mod binance_ws;
+pub mod cpu_affinity;
+pub mod order_book;
+pub mod ffi_ring;

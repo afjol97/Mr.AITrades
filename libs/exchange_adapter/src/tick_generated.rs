@@ -28,8 +28,8 @@ pub struct Tick<'a> {
 impl<'a> flatbuffers::Follow<'a> for Tick<'a> {
   type Inner = Tick<'a>;
   #[inline]
-  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-    Self { _tab: flatbuffers::Table { buf, loc } }
+  unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table::new(buf, loc) }
   }
 }
 
@@ -59,19 +59,19 @@ impl<'a> Tick<'a> {
 
   #[inline]
   pub fn ts(&self) -> u64 {
-    self._tab.get::<u64>(Tick::VT_TS, Some(0)).unwrap()
+    unsafe { self._tab.get::<u64>(Tick::VT_TS, Some(0)).unwrap() }
   }
   #[inline]
   pub fn px(&self) -> f32 {
-    self._tab.get::<f32>(Tick::VT_PX, Some(0.0)).unwrap()
+    unsafe { self._tab.get::<f32>(Tick::VT_PX, Some(0.0)).unwrap() }
   }
   #[inline]
   pub fn qty(&self) -> f32 {
-    self._tab.get::<f32>(Tick::VT_QTY, Some(0.0)).unwrap()
+    unsafe { self._tab.get::<f32>(Tick::VT_QTY, Some(0.0)).unwrap() }
   }
   #[inline]
   pub fn symbol(&self) -> Option<&'a str> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(Tick::VT_SYMBOL, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(Tick::VT_SYMBOL, None) }
   }
 }
 
@@ -164,8 +164,8 @@ pub struct OrderBookLevel<'a> {
 impl<'a> flatbuffers::Follow<'a> for OrderBookLevel<'a> {
   type Inner = OrderBookLevel<'a>;
   #[inline]
-  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-    Self { _tab: flatbuffers::Table { buf, loc } }
+  unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table::new(buf, loc) }
   }
 }
 
@@ -191,11 +191,11 @@ impl<'a> OrderBookLevel<'a> {
 
   #[inline]
   pub fn price(&self) -> f32 {
-    self._tab.get::<f32>(OrderBookLevel::VT_PRICE, Some(0.0)).unwrap()
+    unsafe { self._tab.get::<f32>(OrderBookLevel::VT_PRICE, Some(0.0)).unwrap() }
   }
   #[inline]
   pub fn qty(&self) -> f32 {
-    self._tab.get::<f32>(OrderBookLevel::VT_QTY, Some(0.0)).unwrap()
+    unsafe { self._tab.get::<f32>(OrderBookLevel::VT_QTY, Some(0.0)).unwrap() }
   }
 }
 
@@ -272,8 +272,8 @@ pub struct OrderBook<'a> {
 impl<'a> flatbuffers::Follow<'a> for OrderBook<'a> {
   type Inner = OrderBook<'a>;
   #[inline]
-  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-    Self { _tab: flatbuffers::Table { buf, loc } }
+  unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table::new(buf, loc) }
   }
 }
 
@@ -307,27 +307,27 @@ impl<'a> OrderBook<'a> {
 
   #[inline]
   pub fn ts(&self) -> u64 {
-    self._tab.get::<u64>(OrderBook::VT_TS, Some(0)).unwrap()
+    unsafe { self._tab.get::<u64>(OrderBook::VT_TS, Some(0)).unwrap() }
   }
   #[inline]
   pub fn symbol(&self) -> Option<&'a str> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(OrderBook::VT_SYMBOL, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(OrderBook::VT_SYMBOL, None) }
   }
   #[inline]
   pub fn bids(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel<'a>>>> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>(OrderBook::VT_BIDS, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>(OrderBook::VT_BIDS, None) }
   }
   #[inline]
   pub fn asks(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel<'a>>>> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>(OrderBook::VT_ASKS, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>(OrderBook::VT_ASKS, None) }
   }
   #[inline]
   pub fn seq(&self) -> u64 {
-    self._tab.get::<u64>(OrderBook::VT_SEQ, Some(0)).unwrap()
+    unsafe { self._tab.get::<u64>(OrderBook::VT_SEQ, Some(0)).unwrap() }
   }
   #[inline]
   pub fn event_type(&self) -> Option<&'a str> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(OrderBook::VT_EVENT_TYPE, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(OrderBook::VT_EVENT_TYPE, None) }
   }
 }
 
@@ -436,8 +436,8 @@ pub struct MarketEvent<'a> {
 impl<'a> flatbuffers::Follow<'a> for MarketEvent<'a> {
   type Inner = MarketEvent<'a>;
   #[inline]
-  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-    Self { _tab: flatbuffers::Table { buf, loc } }
+  unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table::new(buf, loc) }
   }
 }
 
@@ -473,31 +473,31 @@ impl<'a> MarketEvent<'a> {
 
   #[inline]
   pub fn ts(&self) -> u64 {
-    self._tab.get::<u64>(MarketEvent::VT_TS, Some(0)).unwrap()
+    unsafe { self._tab.get::<u64>(MarketEvent::VT_TS, Some(0)).unwrap() }
   }
   #[inline]
   pub fn symbol(&self) -> Option<&'a str> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_SYMBOL, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_SYMBOL, None) }
   }
   #[inline]
   pub fn event_type(&self) -> Option<&'a str> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_EVENT_TYPE, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_EVENT_TYPE, None) }
   }
   #[inline]
   pub fn px(&self) -> f32 {
-    self._tab.get::<f32>(MarketEvent::VT_PX, Some(0.0)).unwrap()
+    unsafe { self._tab.get::<f32>(MarketEvent::VT_PX, Some(0.0)).unwrap() }
   }
   #[inline]
   pub fn qty(&self) -> f32 {
-    self._tab.get::<f32>(MarketEvent::VT_QTY, Some(0.0)).unwrap()
+    unsafe { self._tab.get::<f32>(MarketEvent::VT_QTY, Some(0.0)).unwrap() }
   }
   #[inline]
   pub fn side(&self) -> Option<&'a str> {
-    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_SIDE, None)
+    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_SIDE, None) }
   }
   #[inline]
   pub fn seq(&self) -> u64 {
-    self._tab.get::<u64>(MarketEvent::VT_SEQ, Some(0)).unwrap()
+    unsafe { self._tab.get::<u64>(MarketEvent::VT_SEQ, Some(0)).unwrap() }
   }
 }
 
