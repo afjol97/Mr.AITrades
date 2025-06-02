@@ -7,4 +7,28 @@ table Tick {
   symbol:string;
 }
 
-root_type Tick;
+table OrderBookLevel {
+  price: float;
+  qty: float;
+}
+
+table OrderBook {
+  ts: ulong;
+  symbol: string;
+  bids: [OrderBookLevel];
+  asks: [OrderBookLevel];
+  seq: ulong;
+  event_type: string; // e.g. "snapshot", "delta"
+}
+
+table MarketEvent {
+  ts: ulong;
+  symbol: string;
+  event_type: string; // e.g. "trade", "snapshot", "delta"
+  px: float;
+  qty: float;
+  side: string;
+  seq: ulong;
+}
+
+root_type OrderBook;

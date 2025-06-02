@@ -28,8 +28,8 @@ pub struct Tick<'a> {
 impl<'a> flatbuffers::Follow<'a> for Tick<'a> {
   type Inner = Tick<'a>;
   #[inline]
-  unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-    Self { _tab: flatbuffers::Table::new(buf, loc) }
+  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table { buf, loc } }
   }
 }
 
@@ -40,7 +40,7 @@ impl<'a> Tick<'a> {
   pub const VT_SYMBOL: flatbuffers::VOffsetT = 10;
 
   #[inline]
-  pub unsafe fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+  pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
     Tick { _tab: table }
   }
   #[allow(unused_mut)]
@@ -59,31 +59,19 @@ impl<'a> Tick<'a> {
 
   #[inline]
   pub fn ts(&self) -> u64 {
-    // Safety:
-    // Created from valid Table for this object
-    // which contains a valid value in this slot
-    unsafe { self._tab.get::<u64>(Tick::VT_TS, Some(0)).unwrap()}
+    self._tab.get::<u64>(Tick::VT_TS, Some(0)).unwrap()
   }
   #[inline]
   pub fn px(&self) -> f32 {
-    // Safety:
-    // Created from valid Table for this object
-    // which contains a valid value in this slot
-    unsafe { self._tab.get::<f32>(Tick::VT_PX, Some(0.0)).unwrap()}
+    self._tab.get::<f32>(Tick::VT_PX, Some(0.0)).unwrap()
   }
   #[inline]
   pub fn qty(&self) -> f32 {
-    // Safety:
-    // Created from valid Table for this object
-    // which contains a valid value in this slot
-    unsafe { self._tab.get::<f32>(Tick::VT_QTY, Some(0.0)).unwrap()}
+    self._tab.get::<f32>(Tick::VT_QTY, Some(0.0)).unwrap()
   }
   #[inline]
   pub fn symbol(&self) -> Option<&'a str> {
-    // Safety:
-    // Created from valid Table for this object
-    // which contains a valid value in this slot
-    unsafe { self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(Tick::VT_SYMBOL, None)}
+    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(Tick::VT_SYMBOL, None)
   }
 }
 
@@ -166,75 +154,537 @@ impl core::fmt::Debug for Tick<'_> {
       ds.finish()
   }
 }
+pub enum OrderBookLevelOffset {}
+#[derive(Copy, Clone, PartialEq)]
+
+pub struct OrderBookLevel<'a> {
+  pub _tab: flatbuffers::Table<'a>,
+}
+
+impl<'a> flatbuffers::Follow<'a> for OrderBookLevel<'a> {
+  type Inner = OrderBookLevel<'a>;
+  #[inline]
+  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table { buf, loc } }
+  }
+}
+
+impl<'a> OrderBookLevel<'a> {
+  pub const VT_PRICE: flatbuffers::VOffsetT = 4;
+  pub const VT_QTY: flatbuffers::VOffsetT = 6;
+
+  #[inline]
+  pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+    OrderBookLevel { _tab: table }
+  }
+  #[allow(unused_mut)]
+  pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
+    _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
+    args: &'args OrderBookLevelArgs
+  ) -> flatbuffers::WIPOffset<OrderBookLevel<'bldr>> {
+    let mut builder = OrderBookLevelBuilder::new(_fbb);
+    builder.add_qty(args.qty);
+    builder.add_price(args.price);
+    builder.finish()
+  }
+
+
+  #[inline]
+  pub fn price(&self) -> f32 {
+    self._tab.get::<f32>(OrderBookLevel::VT_PRICE, Some(0.0)).unwrap()
+  }
+  #[inline]
+  pub fn qty(&self) -> f32 {
+    self._tab.get::<f32>(OrderBookLevel::VT_QTY, Some(0.0)).unwrap()
+  }
+}
+
+impl flatbuffers::Verifiable for OrderBookLevel<'_> {
+  #[inline]
+  fn run_verifier(
+    v: &mut flatbuffers::Verifier, pos: usize
+  ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
+    use self::flatbuffers::Verifiable;
+    v.visit_table(pos)?
+     .visit_field::<f32>("price", Self::VT_PRICE, false)?
+     .visit_field::<f32>("qty", Self::VT_QTY, false)?
+     .finish();
+    Ok(())
+  }
+}
+pub struct OrderBookLevelArgs {
+    pub price: f32,
+    pub qty: f32,
+}
+impl<'a> Default for OrderBookLevelArgs {
+  #[inline]
+  fn default() -> Self {
+    OrderBookLevelArgs {
+      price: 0.0,
+      qty: 0.0,
+    }
+  }
+}
+
+pub struct OrderBookLevelBuilder<'a: 'b, 'b> {
+  fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+  start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+}
+impl<'a: 'b, 'b> OrderBookLevelBuilder<'a, 'b> {
+  #[inline]
+  pub fn add_price(&mut self, price: f32) {
+    self.fbb_.push_slot::<f32>(OrderBookLevel::VT_PRICE, price, 0.0);
+  }
+  #[inline]
+  pub fn add_qty(&mut self, qty: f32) {
+    self.fbb_.push_slot::<f32>(OrderBookLevel::VT_QTY, qty, 0.0);
+  }
+  #[inline]
+  pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> OrderBookLevelBuilder<'a, 'b> {
+    let start = _fbb.start_table();
+    OrderBookLevelBuilder {
+      fbb_: _fbb,
+      start_: start,
+    }
+  }
+  #[inline]
+  pub fn finish(self) -> flatbuffers::WIPOffset<OrderBookLevel<'a>> {
+    let o = self.fbb_.end_table(self.start_);
+    flatbuffers::WIPOffset::new(o.value())
+  }
+}
+
+impl core::fmt::Debug for OrderBookLevel<'_> {
+  fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    let mut ds = f.debug_struct("OrderBookLevel");
+      ds.field("price", &self.price());
+      ds.field("qty", &self.qty());
+      ds.finish()
+  }
+}
+pub enum OrderBookOffset {}
+#[derive(Copy, Clone, PartialEq)]
+
+pub struct OrderBook<'a> {
+  pub _tab: flatbuffers::Table<'a>,
+}
+
+impl<'a> flatbuffers::Follow<'a> for OrderBook<'a> {
+  type Inner = OrderBook<'a>;
+  #[inline]
+  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table { buf, loc } }
+  }
+}
+
+impl<'a> OrderBook<'a> {
+  pub const VT_TS: flatbuffers::VOffsetT = 4;
+  pub const VT_SYMBOL: flatbuffers::VOffsetT = 6;
+  pub const VT_BIDS: flatbuffers::VOffsetT = 8;
+  pub const VT_ASKS: flatbuffers::VOffsetT = 10;
+  pub const VT_SEQ: flatbuffers::VOffsetT = 12;
+  pub const VT_EVENT_TYPE: flatbuffers::VOffsetT = 14;
+
+  #[inline]
+  pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+    OrderBook { _tab: table }
+  }
+  #[allow(unused_mut)]
+  pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
+    _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
+    args: &'args OrderBookArgs<'args>
+  ) -> flatbuffers::WIPOffset<OrderBook<'bldr>> {
+    let mut builder = OrderBookBuilder::new(_fbb);
+    builder.add_seq(args.seq);
+    builder.add_ts(args.ts);
+    if let Some(x) = args.event_type { builder.add_event_type(x); }
+    if let Some(x) = args.asks { builder.add_asks(x); }
+    if let Some(x) = args.bids { builder.add_bids(x); }
+    if let Some(x) = args.symbol { builder.add_symbol(x); }
+    builder.finish()
+  }
+
+
+  #[inline]
+  pub fn ts(&self) -> u64 {
+    self._tab.get::<u64>(OrderBook::VT_TS, Some(0)).unwrap()
+  }
+  #[inline]
+  pub fn symbol(&self) -> Option<&'a str> {
+    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(OrderBook::VT_SYMBOL, None)
+  }
+  #[inline]
+  pub fn bids(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel<'a>>>> {
+    self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>(OrderBook::VT_BIDS, None)
+  }
+  #[inline]
+  pub fn asks(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel<'a>>>> {
+    self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>(OrderBook::VT_ASKS, None)
+  }
+  #[inline]
+  pub fn seq(&self) -> u64 {
+    self._tab.get::<u64>(OrderBook::VT_SEQ, Some(0)).unwrap()
+  }
+  #[inline]
+  pub fn event_type(&self) -> Option<&'a str> {
+    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(OrderBook::VT_EVENT_TYPE, None)
+  }
+}
+
+impl flatbuffers::Verifiable for OrderBook<'_> {
+  #[inline]
+  fn run_verifier(
+    v: &mut flatbuffers::Verifier, pos: usize
+  ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
+    use self::flatbuffers::Verifiable;
+    v.visit_table(pos)?
+     .visit_field::<u64>("ts", Self::VT_TS, false)?
+     .visit_field::<flatbuffers::ForwardsUOffset<&str>>("symbol", Self::VT_SYMBOL, false)?
+     .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>("bids", Self::VT_BIDS, false)?
+     .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<OrderBookLevel>>>>("asks", Self::VT_ASKS, false)?
+     .visit_field::<u64>("seq", Self::VT_SEQ, false)?
+     .visit_field::<flatbuffers::ForwardsUOffset<&str>>("event_type", Self::VT_EVENT_TYPE, false)?
+     .finish();
+    Ok(())
+  }
+}
+pub struct OrderBookArgs<'a> {
+    pub ts: u64,
+    pub symbol: Option<flatbuffers::WIPOffset<&'a str>>,
+    pub bids: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel<'a>>>>>,
+    pub asks: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<OrderBookLevel<'a>>>>>,
+    pub seq: u64,
+    pub event_type: Option<flatbuffers::WIPOffset<&'a str>>,
+}
+impl<'a> Default for OrderBookArgs<'a> {
+  #[inline]
+  fn default() -> Self {
+    OrderBookArgs {
+      ts: 0,
+      symbol: None,
+      bids: None,
+      asks: None,
+      seq: 0,
+      event_type: None,
+    }
+  }
+}
+
+pub struct OrderBookBuilder<'a: 'b, 'b> {
+  fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+  start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+}
+impl<'a: 'b, 'b> OrderBookBuilder<'a, 'b> {
+  #[inline]
+  pub fn add_ts(&mut self, ts: u64) {
+    self.fbb_.push_slot::<u64>(OrderBook::VT_TS, ts, 0);
+  }
+  #[inline]
+  pub fn add_symbol(&mut self, symbol: flatbuffers::WIPOffset<&'b  str>) {
+    self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(OrderBook::VT_SYMBOL, symbol);
+  }
+  #[inline]
+  pub fn add_bids(&mut self, bids: flatbuffers::WIPOffset<flatbuffers::Vector<'b , flatbuffers::ForwardsUOffset<OrderBookLevel<'b >>>>) {
+    self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(OrderBook::VT_BIDS, bids);
+  }
+  #[inline]
+  pub fn add_asks(&mut self, asks: flatbuffers::WIPOffset<flatbuffers::Vector<'b , flatbuffers::ForwardsUOffset<OrderBookLevel<'b >>>>) {
+    self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(OrderBook::VT_ASKS, asks);
+  }
+  #[inline]
+  pub fn add_seq(&mut self, seq: u64) {
+    self.fbb_.push_slot::<u64>(OrderBook::VT_SEQ, seq, 0);
+  }
+  #[inline]
+  pub fn add_event_type(&mut self, event_type: flatbuffers::WIPOffset<&'b  str>) {
+    self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(OrderBook::VT_EVENT_TYPE, event_type);
+  }
+  #[inline]
+  pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> OrderBookBuilder<'a, 'b> {
+    let start = _fbb.start_table();
+    OrderBookBuilder {
+      fbb_: _fbb,
+      start_: start,
+    }
+  }
+  #[inline]
+  pub fn finish(self) -> flatbuffers::WIPOffset<OrderBook<'a>> {
+    let o = self.fbb_.end_table(self.start_);
+    flatbuffers::WIPOffset::new(o.value())
+  }
+}
+
+impl core::fmt::Debug for OrderBook<'_> {
+  fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    let mut ds = f.debug_struct("OrderBook");
+      ds.field("ts", &self.ts());
+      ds.field("symbol", &self.symbol());
+      ds.field("bids", &self.bids());
+      ds.field("asks", &self.asks());
+      ds.field("seq", &self.seq());
+      ds.field("event_type", &self.event_type());
+      ds.finish()
+  }
+}
+pub enum MarketEventOffset {}
+#[derive(Copy, Clone, PartialEq)]
+
+pub struct MarketEvent<'a> {
+  pub _tab: flatbuffers::Table<'a>,
+}
+
+impl<'a> flatbuffers::Follow<'a> for MarketEvent<'a> {
+  type Inner = MarketEvent<'a>;
+  #[inline]
+  fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+    Self { _tab: flatbuffers::Table { buf, loc } }
+  }
+}
+
+impl<'a> MarketEvent<'a> {
+  pub const VT_TS: flatbuffers::VOffsetT = 4;
+  pub const VT_SYMBOL: flatbuffers::VOffsetT = 6;
+  pub const VT_EVENT_TYPE: flatbuffers::VOffsetT = 8;
+  pub const VT_PX: flatbuffers::VOffsetT = 10;
+  pub const VT_QTY: flatbuffers::VOffsetT = 12;
+  pub const VT_SIDE: flatbuffers::VOffsetT = 14;
+  pub const VT_SEQ: flatbuffers::VOffsetT = 16;
+
+  #[inline]
+  pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+    MarketEvent { _tab: table }
+  }
+  #[allow(unused_mut)]
+  pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
+    _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
+    args: &'args MarketEventArgs<'args>
+  ) -> flatbuffers::WIPOffset<MarketEvent<'bldr>> {
+    let mut builder = MarketEventBuilder::new(_fbb);
+    builder.add_seq(args.seq);
+    builder.add_ts(args.ts);
+    if let Some(x) = args.side { builder.add_side(x); }
+    builder.add_qty(args.qty);
+    builder.add_px(args.px);
+    if let Some(x) = args.event_type { builder.add_event_type(x); }
+    if let Some(x) = args.symbol { builder.add_symbol(x); }
+    builder.finish()
+  }
+
+
+  #[inline]
+  pub fn ts(&self) -> u64 {
+    self._tab.get::<u64>(MarketEvent::VT_TS, Some(0)).unwrap()
+  }
+  #[inline]
+  pub fn symbol(&self) -> Option<&'a str> {
+    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_SYMBOL, None)
+  }
+  #[inline]
+  pub fn event_type(&self) -> Option<&'a str> {
+    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_EVENT_TYPE, None)
+  }
+  #[inline]
+  pub fn px(&self) -> f32 {
+    self._tab.get::<f32>(MarketEvent::VT_PX, Some(0.0)).unwrap()
+  }
+  #[inline]
+  pub fn qty(&self) -> f32 {
+    self._tab.get::<f32>(MarketEvent::VT_QTY, Some(0.0)).unwrap()
+  }
+  #[inline]
+  pub fn side(&self) -> Option<&'a str> {
+    self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(MarketEvent::VT_SIDE, None)
+  }
+  #[inline]
+  pub fn seq(&self) -> u64 {
+    self._tab.get::<u64>(MarketEvent::VT_SEQ, Some(0)).unwrap()
+  }
+}
+
+impl flatbuffers::Verifiable for MarketEvent<'_> {
+  #[inline]
+  fn run_verifier(
+    v: &mut flatbuffers::Verifier, pos: usize
+  ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
+    use self::flatbuffers::Verifiable;
+    v.visit_table(pos)?
+     .visit_field::<u64>("ts", Self::VT_TS, false)?
+     .visit_field::<flatbuffers::ForwardsUOffset<&str>>("symbol", Self::VT_SYMBOL, false)?
+     .visit_field::<flatbuffers::ForwardsUOffset<&str>>("event_type", Self::VT_EVENT_TYPE, false)?
+     .visit_field::<f32>("px", Self::VT_PX, false)?
+     .visit_field::<f32>("qty", Self::VT_QTY, false)?
+     .visit_field::<flatbuffers::ForwardsUOffset<&str>>("side", Self::VT_SIDE, false)?
+     .visit_field::<u64>("seq", Self::VT_SEQ, false)?
+     .finish();
+    Ok(())
+  }
+}
+pub struct MarketEventArgs<'a> {
+    pub ts: u64,
+    pub symbol: Option<flatbuffers::WIPOffset<&'a str>>,
+    pub event_type: Option<flatbuffers::WIPOffset<&'a str>>,
+    pub px: f32,
+    pub qty: f32,
+    pub side: Option<flatbuffers::WIPOffset<&'a str>>,
+    pub seq: u64,
+}
+impl<'a> Default for MarketEventArgs<'a> {
+  #[inline]
+  fn default() -> Self {
+    MarketEventArgs {
+      ts: 0,
+      symbol: None,
+      event_type: None,
+      px: 0.0,
+      qty: 0.0,
+      side: None,
+      seq: 0,
+    }
+  }
+}
+
+pub struct MarketEventBuilder<'a: 'b, 'b> {
+  fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+  start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+}
+impl<'a: 'b, 'b> MarketEventBuilder<'a, 'b> {
+  #[inline]
+  pub fn add_ts(&mut self, ts: u64) {
+    self.fbb_.push_slot::<u64>(MarketEvent::VT_TS, ts, 0);
+  }
+  #[inline]
+  pub fn add_symbol(&mut self, symbol: flatbuffers::WIPOffset<&'b  str>) {
+    self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MarketEvent::VT_SYMBOL, symbol);
+  }
+  #[inline]
+  pub fn add_event_type(&mut self, event_type: flatbuffers::WIPOffset<&'b  str>) {
+    self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MarketEvent::VT_EVENT_TYPE, event_type);
+  }
+  #[inline]
+  pub fn add_px(&mut self, px: f32) {
+    self.fbb_.push_slot::<f32>(MarketEvent::VT_PX, px, 0.0);
+  }
+  #[inline]
+  pub fn add_qty(&mut self, qty: f32) {
+    self.fbb_.push_slot::<f32>(MarketEvent::VT_QTY, qty, 0.0);
+  }
+  #[inline]
+  pub fn add_side(&mut self, side: flatbuffers::WIPOffset<&'b  str>) {
+    self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MarketEvent::VT_SIDE, side);
+  }
+  #[inline]
+  pub fn add_seq(&mut self, seq: u64) {
+    self.fbb_.push_slot::<u64>(MarketEvent::VT_SEQ, seq, 0);
+  }
+  #[inline]
+  pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MarketEventBuilder<'a, 'b> {
+    let start = _fbb.start_table();
+    MarketEventBuilder {
+      fbb_: _fbb,
+      start_: start,
+    }
+  }
+  #[inline]
+  pub fn finish(self) -> flatbuffers::WIPOffset<MarketEvent<'a>> {
+    let o = self.fbb_.end_table(self.start_);
+    flatbuffers::WIPOffset::new(o.value())
+  }
+}
+
+impl core::fmt::Debug for MarketEvent<'_> {
+  fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    let mut ds = f.debug_struct("MarketEvent");
+      ds.field("ts", &self.ts());
+      ds.field("symbol", &self.symbol());
+      ds.field("event_type", &self.event_type());
+      ds.field("px", &self.px());
+      ds.field("qty", &self.qty());
+      ds.field("side", &self.side());
+      ds.field("seq", &self.seq());
+      ds.finish()
+  }
+}
 #[inline]
-/// Verifies that a buffer of bytes contains a `Tick`
+#[deprecated(since="2.0.0", note="Deprecated in favor of `root_as...` methods.")]
+pub fn get_root_as_order_book<'a>(buf: &'a [u8]) -> OrderBook<'a> {
+  unsafe { flatbuffers::root_unchecked::<OrderBook<'a>>(buf) }
+}
+
+#[inline]
+#[deprecated(since="2.0.0", note="Deprecated in favor of `root_as...` methods.")]
+pub fn get_size_prefixed_root_as_order_book<'a>(buf: &'a [u8]) -> OrderBook<'a> {
+  unsafe { flatbuffers::size_prefixed_root_unchecked::<OrderBook<'a>>(buf) }
+}
+
+#[inline]
+/// Verifies that a buffer of bytes contains a `OrderBook`
 /// and returns it.
 /// Note that verification is still experimental and may not
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
-/// `root_as_tick_unchecked`.
-pub fn root_as_tick(buf: &[u8]) -> Result<Tick, flatbuffers::InvalidFlatbuffer> {
-  flatbuffers::root::<Tick>(buf)
+/// `root_as_order_book_unchecked`.
+pub fn root_as_order_book(buf: &[u8]) -> Result<OrderBook, flatbuffers::InvalidFlatbuffer> {
+  flatbuffers::root::<OrderBook>(buf)
 }
 #[inline]
 /// Verifies that a buffer of bytes contains a size prefixed
-/// `Tick` and returns it.
+/// `OrderBook` and returns it.
 /// Note that verification is still experimental and may not
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
-/// `size_prefixed_root_as_tick_unchecked`.
-pub fn size_prefixed_root_as_tick(buf: &[u8]) -> Result<Tick, flatbuffers::InvalidFlatbuffer> {
-  flatbuffers::size_prefixed_root::<Tick>(buf)
+/// `size_prefixed_root_as_order_book_unchecked`.
+pub fn size_prefixed_root_as_order_book(buf: &[u8]) -> Result<OrderBook, flatbuffers::InvalidFlatbuffer> {
+  flatbuffers::size_prefixed_root::<OrderBook>(buf)
 }
 #[inline]
 /// Verifies, with the given options, that a buffer of bytes
-/// contains a `Tick` and returns it.
+/// contains a `OrderBook` and returns it.
 /// Note that verification is still experimental and may not
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
-/// `root_as_tick_unchecked`.
-pub fn root_as_tick_with_opts<'b, 'o>(
+/// `root_as_order_book_unchecked`.
+pub fn root_as_order_book_with_opts<'b, 'o>(
   opts: &'o flatbuffers::VerifierOptions,
   buf: &'b [u8],
-) -> Result<Tick<'b>, flatbuffers::InvalidFlatbuffer> {
-  flatbuffers::root_with_opts::<Tick<'b>>(opts, buf)
+) -> Result<OrderBook<'b>, flatbuffers::InvalidFlatbuffer> {
+  flatbuffers::root_with_opts::<OrderBook<'b>>(opts, buf)
 }
 #[inline]
 /// Verifies, with the given verifier options, that a buffer of
-/// bytes contains a size prefixed `Tick` and returns
+/// bytes contains a size prefixed `OrderBook` and returns
 /// it. Note that verification is still experimental and may not
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
-/// `root_as_tick_unchecked`.
-pub fn size_prefixed_root_as_tick_with_opts<'b, 'o>(
+/// `root_as_order_book_unchecked`.
+pub fn size_prefixed_root_as_order_book_with_opts<'b, 'o>(
   opts: &'o flatbuffers::VerifierOptions,
   buf: &'b [u8],
-) -> Result<Tick<'b>, flatbuffers::InvalidFlatbuffer> {
-  flatbuffers::size_prefixed_root_with_opts::<Tick<'b>>(opts, buf)
+) -> Result<OrderBook<'b>, flatbuffers::InvalidFlatbuffer> {
+  flatbuffers::size_prefixed_root_with_opts::<OrderBook<'b>>(opts, buf)
 }
 #[inline]
-/// Assumes, without verification, that a buffer of bytes contains a Tick and returns it.
+/// Assumes, without verification, that a buffer of bytes contains a OrderBook and returns it.
 /// # Safety
-/// Callers must trust the given bytes do indeed contain a valid `Tick`.
-pub unsafe fn root_as_tick_unchecked(buf: &[u8]) -> Tick {
-  flatbuffers::root_unchecked::<Tick>(buf)
+/// Callers must trust the given bytes do indeed contain a valid `OrderBook`.
+pub unsafe fn root_as_order_book_unchecked(buf: &[u8]) -> OrderBook {
+  flatbuffers::root_unchecked::<OrderBook>(buf)
 }
 #[inline]
-/// Assumes, without verification, that a buffer of bytes contains a size prefixed Tick and returns it.
+/// Assumes, without verification, that a buffer of bytes contains a size prefixed OrderBook and returns it.
 /// # Safety
-/// Callers must trust the given bytes do indeed contain a valid size prefixed `Tick`.
-pub unsafe fn size_prefixed_root_as_tick_unchecked(buf: &[u8]) -> Tick {
-  flatbuffers::size_prefixed_root_unchecked::<Tick>(buf)
+/// Callers must trust the given bytes do indeed contain a valid size prefixed `OrderBook`.
+pub unsafe fn size_prefixed_root_as_order_book_unchecked(buf: &[u8]) -> OrderBook {
+  flatbuffers::size_prefixed_root_unchecked::<OrderBook>(buf)
 }
 #[inline]
-pub fn finish_tick_buffer<'a, 'b>(
+pub fn finish_order_book_buffer<'a, 'b>(
     fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<Tick<'a>>) {
+    root: flatbuffers::WIPOffset<OrderBook<'a>>) {
   fbb.finish(root, None);
 }
 
 #[inline]
-pub fn finish_size_prefixed_tick_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<Tick<'a>>) {
+pub fn finish_size_prefixed_order_book_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<OrderBook<'a>>) {
   fbb.finish_size_prefixed(root, None);
 }
 }  // pub mod market
