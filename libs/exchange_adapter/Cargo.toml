@@ -1,0 +1,16 @@
+[package]
+name = "exchange_adapter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+io-uring = { workspace = true }
+flatbuffers = "23.5.26"
+shared_mem = { path = "../shared_mem" }
+pyo3 = { version = "0.20", features = ["extension-module"] }
+libc = "0.2"
+anyhow = "1.0"
+once_cell = "1.19"
+
+[dev-dependencies]
+criterion = "0.5"

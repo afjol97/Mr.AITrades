@@ -1,0 +1,12 @@
+[package]
+name = "data_feed"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+io-uring = { workspace = true }
+shared_mem = { path = "../../libs/shared_mem" }
+fix_engine = { path = "../../libs/fix_engine" }
+pyo3 = { workspace = true }
+numpy = { workspace = true }
+libc = { workspace = true }

@@ -1,0 +1,12 @@
+[package]
+name = "shared_mem"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+memmap2 = { workspace = true }
+libc = "0.2"
+
+[lib]
+name = "shared_mem"
+crate-type = ["cdylib"]

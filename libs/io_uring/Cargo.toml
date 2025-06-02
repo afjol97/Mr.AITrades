@@ -1,0 +1,19 @@
+cat > /media/oem/Scripts/TradingBot/hft_bot/Cargo.toml << 'EOF'
+[workspace]
+resolver = "2"
+members = [
+    "core/data_feed",
+    "libs/fix_engine",
+    "libs/shared_mem",
+    "libs/market_data"
+]
+
+[workspace.dependencies]
+tokio = { version = "1.0", features = ["full"] }
+memmap2 = "0.9"
+pyo3 = { version = "0.20", features = ["extension-module"] }
+numpy = "0.20"
+io-uring = "0.6"
+anyhow = "1.0"
+libc = "0.2"
+EOF

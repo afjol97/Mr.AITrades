@@ -1,0 +1,17 @@
+// This file contains the Rust implementation of the execution engine that handles order management via the FIX protocol.
+
+use quickfix_rs::{Session, Message};
+
+struct OrderManager {
+    session: Session,
+    tx_ring: OrderTxRing,  // io_uring
+}
+
+impl OrderManager {
+    fn submit_order(&mut self, order: Order) {
+        let fix_msg = Message::new()
+            .set_field(11, order.id)  // ClOrdID
+            .set_field(55, order.symbol);  // Symbol
+        self.tx_ring.submit(fix_msg.encode());
+    }
+}

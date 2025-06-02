@@ -1,0 +1,5 @@
+# Dockerfile for deploying the AI Trading Bot
+
+FROM nvidia/cuda:12.2-runtime  
+COPY --from=rust-builder /app/target/release/hft_bot /usr/local/bin  
+CMD ["hft_bot", "--config", "/etc/hft/config.toml"]  

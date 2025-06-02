@@ -1,0 +1,10 @@
+namespace market;
+
+table Tick {
+  ts:ulong;
+  px:float;
+  qty:float;
+  symbol:string;
+}
+
+root_type Tick;

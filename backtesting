@@ -1,0 +1,8 @@
+import jax  
+import jax.numpy as jnp  
+
+@jax.jit  
+def backtest(returns, signals):  
+    portfolio = jnp.cumsum(returns * signals)  
+    sharpe = portfolio.mean() / portfolio.std()  
+    return sharpe  

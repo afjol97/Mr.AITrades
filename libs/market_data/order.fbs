@@ -1,0 +1,12 @@
+namespace Market;
+
+table Order {
+  id: string;
+  symbol: string;
+  price: double;
+  qty: double;
+  side: string;
+  features: [float];
+}
+
+root_type Order;
