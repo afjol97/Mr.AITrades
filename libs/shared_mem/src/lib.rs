@@ -2,7 +2,7 @@ use memmap2::MmapMut;
 use std::fs::OpenOptions;
 
 pub struct SharedTensor {
-    mmap: MmapMut,
+    pub mmap: MmapMut,
 }
 
 impl SharedTensor {

@@ -1,0 +1,1 @@
+/media/oem/Scripts/TradingBot/hft_bot/target/debug/binance_feed: /media/oem/Scripts/TradingBot/hft_bot/libs/market_data/src/bin/binance_feed.rs /media/oem/Scripts/TradingBot/hft_bot/libs/market_data/src/lib.rs /media/oem/Scripts/TradingBot/hft_bot/libs/market_data/src/market_data.rs /media/oem/Scripts/TradingBot/hft_bot/libs/shared_mem/src/lib.rs

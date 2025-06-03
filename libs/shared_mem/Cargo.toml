@@ -9,4 +9,4 @@ libc = "0.2"
 
 [lib]
 name = "shared_mem"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]

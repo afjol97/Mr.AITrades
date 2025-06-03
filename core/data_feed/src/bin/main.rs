@@ -1,10 +1,9 @@
-mod data_feed;
-
-use shared_memory::SharedTensor;
-use data_feed::MarketDataAdapter;
+use data_feed;
 use fix_engine::FixEngine;
 use numpy::PyArray1;
 use pyo3::prelude::*;
+use shared_mem::SharedTensor;
+use data_feed::data_feed::MarketDataAdapter;
 
 fn main() {
     // 1. Initialize components

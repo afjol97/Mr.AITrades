@@ -1,0 +1,10 @@
+namespace MarketData;
+
+table Quote {
+  symbol: string;
+  bid: float;
+  ask: float;
+  timestamp: ulong;
+}
+
+root_type Quote;
